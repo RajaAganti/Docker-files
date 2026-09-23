@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Booking · Simple</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f6f8fd 0%, #e9eef7 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .booking-card {
+      background: #ffffff;
+      max-width: 560px;
+      width: 100%;
+      border-radius: 32px;
+      padding: 2rem 2rem 2.2rem;
+      box-shadow: 0 20px 35px -8px rgba(0, 20, 40, 0.2), 0 8px 18px -6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0b1e33;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    h1 span {
+      background: #1d4ed8;
+      color: white;
+      font-size: 1.4rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      box-shadow: 0 8px 14px -6px #1d4ed880;
+    }
+
+    .subhead {
+      color: #4a5b6e;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      border-left: 3px solid #1d4ed8;
+      padding-left: 0.9rem;
+      font-weight: 450;
+    }
+
+    .event-preview {
+      background: #f0f4fe;
+      border-radius: 20px;
+      padding: 1.1rem 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.8rem;
+      border: 1px solid #cdddfb;
+    }
+
+    .event-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-name {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #0b1e33;
+      line-height: 1.3;
+    }
+
+    .event-meta {
+      font-size: 0.85rem;
+      color: #3a4d64;
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .event-meta i {
+      font-style: normal;
+      background: #d9e4fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+
+    .price-badge {
+      background: #ffffff;
+      border-radius: 50px;
+      padding: 0.45rem 1rem;
+      font-weight: 700;
+      color: #1d4ed8;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid #cdddfb;
+      font-size: 1.2rem;
+      white-space: nowrap;
+    }
+
+    .price-badge small {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #64748b;
+      margin-right: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #3a4d64;
+      margin-bottom: 0.5rem;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 16px;
+      border: 1.5px solid #dbe3ef;
+      background: #ffffff;
+      color: #0b1e33;
+      font-weight: 500;
+      appearance: none;
+      transition: 0.15s;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%233a4d64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.2rem center;
+      background-size: 1.2rem;
+    }
+
+    select:hover, input:hover {
+      border-color: #a0b8e0;
+    }
+
+    select:focus, input:focus {
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
+    }
+
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #dbe3ef;
+      border-radius: 60px;
+      background: #ffffff;
+      padding: 0.2rem;
+      flex: 1;
+      max-width: 160px;
+    }
+
+    .quantity-control button {
+      background: transparent;
+      border: none;
+      width: 2.6rem;
+      height: 2.6rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #1d4ed8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.1s;
+      user-select: none;
+    }
+
+    .quantity-control button:hover {
+      background: #eef3fe;
+    }
+
+    .quantity-control button:active {
+      background: #d9e4fc;
+    }
+
+    .quantity-control input {
+      width: 50px;
+      text-align: center;
+      border: none;
+      padding: 0.4rem 0;
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: transparent;
+      -moz-appearance: textfield;
+      pointer-events: none;
+      color: #0b1e33;
+    }
+
+    .quantity-control input::-webkit-outer-spin-button,
+    .quantity-control input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .total-price {
+      text-align: right;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0b1e33;
+      background: #f8fafd;
+      padding: 0.9rem 1.4rem;
+      border-radius: 18px;
+      margin: 1.8rem 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px dashed #b7c9e5;
+    }
+
+    .total-price span:first-child {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #4a5b6e;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .total-price .amount {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #1d4ed8;
+      line-height: 1;
+    }
+
+    .btn-book {
+      background: #0b1e33;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 1.2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 10px 20px -8px #0b1e3370;
+      letter-spacing: 0.3px;
+      border: 1px solid #1e3a5f;
+    }
+
+    .btn-book:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      box-shadow: 0 14px 24px -8px #1d4ed8b0;
+      transform: scale(1.01);
+    }
+
+    .btn-book:active {
+      transform: scale(0.99);
+    }
+
+    .btn-book:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.3);
+    }
+
+    .message {
+      margin-top: 1rem;
+      padding: 0.9rem 1.2rem;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: 0.2s;
+    }
+
+    .message.success {
+      background: #e3f7ec;
+      color: #0a6b3f;
+      border: 1px solid #b2e6ca;
+    }
+
+    .message.error {
+      background: #ffe9e9;
+      color: #b00020;
+      border: 1px solid #ffc9c9;
+    }
+
+    .message i {
+      font-size: 1.3rem;
+      font-style: normal;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .small-note {
+      font-size: 0.75rem;
+      color: #7b8ba4;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="booking-card">
+  <h1>
+    <span>🎟️</span> Ticket booking
+  </h1>
+  <div class="subhead">Select event & number of tickets</div>
+
+  <!-- Event preview -->
+  <div class="event-preview">
+    <div class="event-info">
+      <div class="event-name" id="eventNameDisplay">Aurora Live 2025</div>
+      <div class="event-meta">
+        <i>📍 Zenith Arena</i>
+        <i>📅 Oct 18 · 8:00 PM</i>
+      </div>
+    </div>
+    <div class="price-badge"><small>from</small> $<span id="perTicketPrice">85</span></div>
+  </div>
+
+  <!-- Event selector -->
+  <div class="form-group">
+    <label for="eventSelect">Choose event</label>
+    <div class="select-wrapper">
+      <select id="eventSelect">
+        <option value="85" data-name="Aurora Live 2025" data-location="Zenith Arena" data-date="Oct 18 · 8:00 PM">🎤 Aurora Live 2025 — $85</option>
+        <option value="120" data-name="Jazz Under Stars" data-location="Blue Note Hall" data-date="Nov 2 · 7:30 PM">🎷 Jazz Under Stars — $120</option>
+        <option value="65" data-name="Indie Rock Night" data-location="The Basement" data-date="Nov 15 · 9:00 PM">🎸 Indie Rock Night — $65</option>
+        <option value="150" data-name="Symphony No. 9" data-location="Grand Concert Hall" data-date="Dec 5 · 7:00 PM">🎻 Symphony No. 9 — $150</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Quantity -->
+  <div class="form-group">
+    <label>Number of tickets</label>
+    <div class="quantity-row">
+      <div class="quantity-control">
+        <button type="button" id="decreaseQty" aria-label="Decrease quantity">−</button>
+        <input type="number" id="quantityInput" value="1" min="1" max="10" readonly>
+        <button type="button" id="increaseQty" aria-label="Increase quantity">+</button>
+      </div>
+      <div style="font-size:0.9rem; color:#3a4d64; font-weight:500;">
+        max 10 tickets
+      </div>
+    </div>
+  </div>
+
+  <!-- Total -->
+  <div class="total-price">
+    <span>Total</span>
+    <span class="amount">$<span id="totalAmount">85</span></span>
+  </div>
+
+  <!-- Book button -->
+  <button class="btn-book" id="bookBtn">
+    <span>🔒</span> Confirm booking
+  </button>
+
+  <!-- Message area -->
+  <div id="messageBox" class="message hidden">
+    <i>ℹ️</i> <span id="messageText"></span>
+  </div>
+
+  <div class="small-note">
+    ⚡ You won't be charged yet — this is a demo.
+  </div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const eventSelect = document.getElementById('eventSelect');
+    const eventNameDisplay = document.getElementById('eventNameDisplay');
+    const perTicketPriceSpan = document.getElementById('perTicketPrice');
+    const quantityInput = document.getElementById('quantityInput');
+    const decreaseBtn = document.getElementById('decreaseQty');
+    const increaseBtn = document.getElementById('increaseQty');
+    const totalAmountSpan = document.getElementById('totalAmount');
+    const bookBtn = document.getElementById('bookBtn');
+    const messageBox = document.getElementById('messageBox');
+    const messageText = document.getElementById('messageText');
+
+    // Helper to get current price per ticket from select
+    function getCurrentPrice() {
+      return parseFloat(eventSelect.value);
+    }
+
+    // Update event preview (name + price) from selected option
+    function updateEventPreview() {
+      const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+      const name = selectedOption.dataset.name || selectedOption.text.split('—')[0].trim();
+      const price = parseFloat(selectedOption.value);
+
+      eventNameDisplay.textContent = name;
+      perTicketPriceSpan.textContent = price;
+      // also update the event-meta? we could but not necessary for this demo, keep as is.
+    }
+
+    // Update total price based on quantity and per-ticket price
+    function updateTotal() {
+      const pricePerTicket = getCurrentPrice();
+      let qty = parseInt(quantityInput.value, 10);
+      if (isNaN(qty) || qty < 1) qty = 1;
+      if (qty > 10) qty = 10;
+      quantityInput.value = qty;
+      const total = pricePerTicket * qty;
+      totalAmountSpan.textContent = total;
+    }
+
+    // Clear any previous message
+    function clearMessage() {
+      messageBox.classList.add('hidden');
+      messageBox.classList.remove('success', 'error');
+    }
+
+    // Show message with type (success/error) and text
+    function showMessage(text, type = 'success') {
+      messageText.textContent = text;
+      messageBox.classList.remove('hidden', 'success', 'error');
+      messageBox.classList.add(type);
+      // set icon based on type
+      const iconSpan = messageBox.querySelector('i');
+      if (iconSpan) {
+        iconSpan.textContent = type === 'success' ? '✅' : '⚠️';
+      }
+    }
+
+    // Handle event change
+    eventSelect.addEventListener('change', function() {
+      updateEventPreview();
+      updateTotal();
+      clearMessage();
+    });
+
+    // Quantity increase
+    increaseBtn.addEventListener('click', function() {
+      let current = parseInt(quantityInput.value, 10);
+      if (current < 10) {
+        quantityInput.value = current + 1;
+        updateTotal();
+        clearMessage();
+      } else {
+        // optional: brief info
+        showMessage('Maximum 10 tickets per booking.', 'error');
+        setTimeout(() => {
+          if (messageText.textContent.includes('Maximum')) {
+            clearMessage();
+          }
+        }, 2200);
+      }
+    });
+
+    // Quantity decrease
+    decreaseBtn.addEventListener('click', function() {
+      let current = parseInt(quantityInput.value, 10);
+      if (current > 1) {
+        quantityInput.value = current - 1;
+        updateTotal();
+        clearMessage();
+      } else {
+        showMessage('At least 1 ticket is required.', 'error');
+        setTimeout(() => {
+          if (messageText.textContent.includes('At least')) {
+            clearMessage();
+          }
+        }, 2200);
+      }
+    });
+
+    // Prevent manual input change (already readonly, but just in case)
+    quantityInput.addEventListener('change', function() {
+      let val = parseInt(this.value, 10);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 10) val = 10;
+      this.value = val;
+      updateTotal();
+    });
+
+    // Book button action
+    bookBtn.addEventListener('click', function() {
+      const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+      const eventName = selectedOption.dataset.name || selectedOption.text.split('—')[0].trim();
+      const qty = parseInt(quantityInput.value, 10);
+      const pricePerTicket = getCurrentPrice();
+      const total = pricePerTicket * qty;
+
+      // Simple validation
+      if (qty < 1 || qty > 10) {
+        showMessage('Please select a valid quantity (1–10).', 'error');
+        return;
+      }
+
+      // Simulate booking success
+      clearMessage();
+      const bookingRef = 'BK' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+      showMessage(`✅ ${qty} ticket${qty > 1 ? 's' : ''} for ${eventName} · Total $${total}. Ref: ${bookingRef}`, 'success');
+
+      // Optional: disable button for 2 seconds to prevent double click
+      bookBtn.disabled = true;
+      bookBtn.style.opacity = '0.7';
+      setTimeout(() => {
+        bookBtn.disabled = false;
+        bookBtn.style.opacity = '1';
+      }, 2500);
+    });
+
+    // Initialize display
+    function init() {
+      updateEventPreview();
+      updateTotal();
+      clearMessage();
+    }
+
+    init();
+
+    // Extra: update meta info from selected event (optional, just to make preview dynamic)
+    // We'll also update the event-meta spans on event change (for a nicer look)
+    const metaSpans = document.querySelectorAll('.event-meta i');
+    // Override the change listener to also update meta – but we already have one, let's enhance it.
+    // Store original event listener? we'll create a new handler that does both. we can reassign.
+
+    // remove existing (not needed, we just add another, but they will both run).
+    // better: modify the existing event listener to also update meta.
+    // but we already defined one. let's keep it, and add another for meta.
+    eventSelect.addEventListener('change', function() {
+      const opt = eventSelect.options[eventSelect.selectedIndex];
+      const location = opt.dataset.location || 'TBA';
+      const date = opt.dataset.date || 'Coming soon';
+      // update meta
+      const metaItems = document.querySelectorAll('.event-meta i');
+      if (metaItems.length >= 2) {
+        metaItems[0].textContent = `📍 ${location}`;
+        metaItems[1].textContent = `📅 ${date}`;
+      }
+    });
+
+    // Trigger initial meta update for default selected
+    (function setInitialMeta() {
+      const opt = eventSelect.options[eventSelect.selectedIndex];
+      const metaItems = document.querySelectorAll('.event-meta i');
+      if (metaItems.length >= 2) {
+        metaItems[0].textContent = `📍 ${opt.dataset.location || 'Zenith Arena'}`;
+        metaItems[1].textContent = `📅 ${opt.dataset.date || 'Oct 18 · 8:00 PM'}`;
+      }
+    })();
+
+  })();
+</script>
+</body>
+</html>
